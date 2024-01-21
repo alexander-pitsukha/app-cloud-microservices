@@ -1,0 +1,66 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-create-organizations
+      author: alexander
+      changes:
+        - createTable:
+            tableName: organizations
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_organizations
+                    nullable: false
+              - column:
+                  name: create_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: address
+                  type: varchar(255)
+              - column:
+                  name: department_ids
+                  type: varchar(255)
+              - column:
+                  name: employee_ids
+                  type: varchar(255)
+              - column:
+                  name: name
+                  type: varchar(255)
+
+  - changeSet:
+      id: 2-insert-organizations
+      author: alexander
+      changes:
+        - insert:
+            tableName: organizations
+            columns:
+              - column:
+                  name: create_at
+                  valueDate: "2026-10-21T00:00:00"
+              - column:
+                  name: name
+                  value: Microsoft
+              - column:
+                  name: address
+                  value: "Redmond, Washington, USA"
+
+        - insert:
+            tableName: organizations
+            columns:
+              - column:
+                  name: create_at
+                  valueDate: "2026-10-21T00:00:00"
+              - column:
+                  name: name
+                  value: Oracle
+              - column:
+                  name: address
+                  value: "Redwood City, California, USA"

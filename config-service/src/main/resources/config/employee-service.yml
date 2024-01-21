@@ -1,12 +1,26 @@
 server:
-  port: 8083
+  port: 8084
   forward-headers-strategy: framework
 
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+    service-url:
+      default-zone: http://localhost:8761/eureka/
 
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+
+spring:
+  datasource:
+    url: jdbc:sqlite:memory:myDb?date_class=TEXT
+    driver-class-name: org.sqlite.JDBC
+    username: sa
+    password: sa
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.sqlite.hibernate.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true

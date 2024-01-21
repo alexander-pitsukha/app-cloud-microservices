@@ -1,35 +1,17 @@
 package com.alexander.services.department.repository;
 
 import com.alexander.services.department.model.Department;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class DepartmentRepository {
+@Repository
+public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
-    private List<Department> departments = new ArrayList<>();
-
-    public Department add(Department department) {
-        department.setId((long) (departments.size() + 1));
-        departments.add(department);
-        return department;
-    }
-
-    public Department findById(Long id) {
-        return departments.stream()
-                .filter(a -> a.getId().equals(id))
-                .findFirst()
-                .orElseThrow();
-    }
-
-    public List<Department> findAll() {
-        return departments;
-    }
-
-    public List<Department> findByOrganization(Long organizationId) {
-        return departments.stream()
-                .filter(a -> a.getOrganizationId().equals(organizationId))
-                .toList();
-    }
+    @Query("select d from Department d where d.organizationId = :organizationId")
+    List<Department> findByOrganization(@Param("organizationId") Long organizationId);
 
 }

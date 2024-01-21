@@ -1,0 +1,78 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-create-departments
+      author: alexander
+      changes:
+        - createTable:
+            tableName: departments
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_departments
+                    nullable: false
+              - column:
+                  name: create_at
+                  type: timestamp
+                  defaultValueComputed: current_timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: organization_id
+                  type: bigint
+              - column:
+                  name: employee_ids
+                  type: varchar(255)
+
+  - changeSet:
+      id: 2-insert-departments
+      author: alexander
+      changes:
+        - insert:
+            tableName: departments
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 1
+              - column:
+                  name: name
+                  value: Development
+
+        - insert:
+            tableName: departments
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 1
+              - column:
+                  name: name
+                  value: Operations
+
+        - insert:
+            tableName: departments
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 2
+              - column:
+                  name: name
+                  value: Development
+
+        - insert:
+            tableName: departments
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 2
+              - column:
+                  name: name
+                  value: Operations

@@ -1,12 +1,26 @@
 server:
-  port: 8082
+  port: 8083
   forward-headers-strategy: framework
 
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+    service-url:
+      default-zone: http://localhost:8761/eureka/
 
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+
+spring:
+  datasource:
+    url: jdbc:derby:memory:myDb;create=true
+    driver-class-name: org.apache.derby.jdbc.EmbeddedDriver
+    username: sa
+    password: sa
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.DerbyTenSevenDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true

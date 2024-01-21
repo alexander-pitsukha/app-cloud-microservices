@@ -1,41 +1,20 @@
 package com.alexander.services.employee.repository;
 
-import java.util.ArrayList;
+import com.alexander.services.employee.model.Employee;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-import com.alexander.services.employee.model.Employee;
+@Repository
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-public class EmployeeRepository {
+    @Query("select e from Employee e where e.departmentId = :departmentId")
+    List<Employee> findByDepartment(@Param("departmentId") Long departmentId);
 
-    private List<Employee> employees = new ArrayList<>();
-
-    public Employee add(Employee employee) {
-        employee.setId((long) (employees.size() + 1));
-        employees.add(employee);
-        return employee;
-    }
-
-    public Employee findById(Long id) {
-        return employees.stream()
-                .filter(a -> a.getId().equals(id))
-                .findFirst()
-                .orElseThrow();
-    }
-
-    public List<Employee> findAll() {
-        return employees;
-    }
-
-    public List<Employee> findByDepartment(Long departmentId) {
-        return employees.stream()
-                .filter(a -> a.getDepartmentId().equals(departmentId))
-                .toList();
-    }
-
-    public List<Employee> findByOrganization(Long organizationId) {
-        return employees.stream()
-                .filter(a -> a.getOrganizationId().equals(organizationId))
-                .toList();
-    }
+    @Query("select e from Employee e where e.organizationId = :organizationId")
+    List<Employee> findByOrganization(@Param("organizationId") Long organizationId);
 
 }

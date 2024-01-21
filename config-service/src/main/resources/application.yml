@@ -3,3 +3,7 @@ server:
 spring:
   profiles:
     active: native
+  security:
+    user:
+      name: ${SPRING_SECURITY_USER_NAME}
+      password: ${SPRING_SECURITY_USER_PASSWORD}
