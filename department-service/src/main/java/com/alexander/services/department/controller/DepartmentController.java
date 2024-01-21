@@ -16,6 +16,7 @@ public class DepartmentController {
 
     private final DepartmentRepository repository;
     private final EmployeeClient employeeClient;
+
     @PostMapping
     public Department add(@RequestBody Department department) {
         log.info("Department add: {}", department);
