@@ -1,0 +1,271 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-create-employees
+      author: alexander
+      changes:
+        - createTable:
+            tableName: employees
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_employees
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: age
+                  type: integer
+              - column:
+                  name: email
+                  type: varchar(255)
+              - column:
+                  name: position
+                  type: varchar(255)
+              - column:
+                  name: department_id
+                  type: bigint
+              - column:
+                  name: organization_id
+                  type: bigint
+              - column:
+                  name: create_at
+                  type: timestamp
+                  defaultValueComputed: current_timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+        - addUniqueConstraint:
+            tableName: employees
+            columnNames: email
+            constraintName: uk_employees_email
+
+  - changeSet:
+      id: 2-insert-employees
+      author: alexander
+      changes:
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 1
+              - column:
+                  name: department_id
+                  valueNumeric: 1
+              - column:
+                  name: name
+                  value: John Smith
+              - column:
+                  name: age
+                  valueNumeric: 34
+              - column:
+                  name: email
+                  value: tn1@test.com
+              - column:
+                  name: position
+                  value: Analyst
+
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 1
+              - column:
+                  name: department_id
+                  valueNumeric: 1
+              - column:
+                  name: name
+                  value: Darren Hamilton
+              - column:
+                  name: age
+                  valueNumeric: 37
+              - column:
+                  name: email
+                  value: tn2@test.com
+              - column:
+                  name: position
+                  value: Manager
+
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 1
+              - column:
+                  name: department_id
+                  valueNumeric: 1
+              - column:
+                  name: name
+                  value: Tom Scott
+              - column:
+                  name: age
+                  valueNumeric: 26
+              - column:
+                  name: email
+                  value: tn3@test.com
+              - column:
+                  name: position
+                  value: Developer
+
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 1
+              - column:
+                  name: department_id
+                  valueNumeric: 2
+              - column:
+                  name: name
+                  value: Anna London
+              - column:
+                  name: age
+                  valueNumeric: 39
+              - column:
+                  name: email
+                  value: tn4@test.com
+              - column:
+                  name: position
+                  value: Analyst
+
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 1
+              - column:
+                  name: department_id
+                  valueNumeric: 2
+              - column:
+                  name: name
+                  value: Patrick Dempsey
+              - column:
+                  name: age
+                  valueNumeric: 27
+              - column:
+                  name: email
+                  value: tn5@test.com
+              - column:
+                  name: position
+                  value: Developer
+
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 2
+              - column:
+                  name: department_id
+                  valueNumeric: 3
+              - column:
+                  name: name
+                  value: Kevin Price
+              - column:
+                  name: age
+                  valueNumeric: 38
+              - column:
+                  name: email
+                  value: tn6@test.com
+              - column:
+                  name: position
+                  value: Developer
+
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 2
+              - column:
+                  name: department_id
+                  valueNumeric: 3
+              - column:
+                  name: name
+                  value: Ian Scott
+              - column:
+                  name: age
+                  valueNumeric: 34
+              - column:
+                  name: email
+                  value: tn7@test.com
+              - column:
+                  name: position
+                  value: Developer
+
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 2
+              - column:
+                  name: department_id
+                  valueNumeric: 3
+              - column:
+                  name: name
+                  value: Andrew Campton
+              - column:
+                  name: age
+                  valueNumeric: 30
+              - column:
+                  name: email
+                  value: tn8@test.com
+              - column:
+                  name: position
+                  value: Manager
+
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 2
+              - column:
+                  name: department_id
+                  valueNumeric: 4
+              - column:
+                  name: name
+                  value: Steve Franklin
+              - column:
+                  name: age
+                  valueNumeric: 25
+              - column:
+                  name: email
+                  value: tn9@test.com
+              - column:
+                  name: position
+                  value: Developer
+
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: organization_id
+                  valueNumeric: 2
+              - column:
+                  name: department_id
+                  valueNumeric: 4
+              - column:
+                  name: name
+                  value: Elisabeth Smith
+              - column:
+                  name: age
+                  valueNumeric: 30
+              - column:
+                  name: email
+                  value: tn10@test.com
+              - column:
+                  name: position
+                  value: Developer

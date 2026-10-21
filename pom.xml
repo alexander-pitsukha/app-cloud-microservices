@@ -16,6 +16,9 @@
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2021.0.4</spring-cloud.version>
+        <lombok.version>1.18.24</lombok.version>
+        <lombok.mapstruct.version>0.2.0</lombok.mapstruct.version>
+        <org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
     </properties>
 
     <dependencyManagement>
@@ -31,12 +34,14 @@
     </dependencyManagement>
 
     <modules>
-        <module>discovery-service</module>
+        <module>commons-lib</module>
         <module>config-service</module>
+        <module>discovery-service</module>
+        <module>gateway-service</module>
+        <module>identity-service</module>
         <module>employee-service</module>
         <module>department-service</module>
         <module>organization-service</module>
-        <module>gateway-service</module>
     </modules>
 
 </project>

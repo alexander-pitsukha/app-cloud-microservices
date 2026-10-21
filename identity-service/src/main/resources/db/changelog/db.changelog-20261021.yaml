@@ -1,0 +1,107 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-create-users
+      author: alexander
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: users_pkey
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: password
+                  type: varchar(255)
+              - column:
+                  name: role
+                  type: integer
+        - addUniqueConstraint:
+            tableName: users
+            columnNames: email
+            constraintName: users_email_key
+
+  - changeSet:
+      id: 2-create-refresh-tokens
+      author: alexander
+      changes:
+        - createTable:
+            tableName: refresh_tokens
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: refresh_tokens_pkey
+                    nullable: false
+              - column:
+                  name: expire_date
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: token
+                  type: varchar(600)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: refresh_tokens_token_key
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: refresh_tokens
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: refresh_tokens_user_id_fkey
+
+  - changeSet:
+      id: 3-insert-default-users
+      author: alexander
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: name
+                  value: admin
+              - column:
+                  name: email
+                  value: admin@test.com
+              - column:
+                  name: password
+                  value: '$2a$10$aCAex9hLLYY6V4Og.UVHi..jWtwb0oSL.2D/bDUoDGem4aW1VPCi6'
+              - column:
+                  name: role
+                  valueNumeric: 0
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: name
+                  value: user
+              - column:
+                  name: email
+                  value: user@test.com
+              - column:
+                  name: password
+                  value: '$2a$10$aCAex9hLLYY6V4Og.UVHi..jWtwb0oSL.2D/bDUoDGem4aW1VPCi6'
+              - column:
+                  name: role
+                  valueNumeric: 1

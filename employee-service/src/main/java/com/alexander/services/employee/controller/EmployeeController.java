@@ -1,53 +1,65 @@
 package com.alexander.services.employee.controller;
 
-import java.util.List;
-
-import com.alexander.services.employee.model.Employee;
+import com.alexander.dto.EmployeeDto;
+import com.alexander.services.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.alexander.services.employee.repository.EmployeeRepository;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class EmployeeController {
 
-    private final EmployeeRepository repository;
+    private final EmployeeService employeeService;
 
-    @PostMapping
-    public Employee add(@RequestBody Employee employee) {
-        log.info("Employee add: {}", employee);
-        return repository.add(employee);
+    @GetMapping
+    public ResponseEntity<List<EmployeeDto>> findAll(@RequestParam int page, @RequestParam int size) {
+        log.info("Employee find");
+        return ResponseEntity.ok(employeeService.findAll(page, size));
     }
 
     @GetMapping("{id}")
-    public Employee findById(@PathVariable("id") Long id) {
+    public ResponseEntity<EmployeeDto> findById(@PathVariable("id") Long id) {
         log.info("Employee find: id={}", id);
-        return repository.findById(id);
-    }
-
-    @GetMapping
-    public List<Employee> findAll() {
-        log.info("Employee find");
-        return repository.findAll();
+        return ResponseEntity.ok(employeeService.findById(id));
     }
 
     @GetMapping("department/{departmentId}")
-    public List<Employee> findByDepartment(@PathVariable("departmentId") Long departmentId) {
+    public ResponseEntity<List<EmployeeDto>> findByDepartment(@PathVariable("departmentId") Long departmentId) {
         log.info("Employee find: departmentId={}", departmentId);
-        return repository.findByDepartment(departmentId);
+        return ResponseEntity.ok(employeeService.findByDepartment(departmentId));
     }
 
     @GetMapping("organization/{organizationId}")
-    public List<Employee> findByOrganization(@PathVariable("organizationId") Long organizationId) {
+    public ResponseEntity<List<EmployeeDto>> findByOrganization(@PathVariable("organizationId") Long organizationId) {
         log.info("Employee find: organizationId={}", organizationId);
-        return repository.findByOrganization(organizationId);
+        return ResponseEntity.ok(employeeService.findByOrganization(organizationId));
+    }
+
+    @PostMapping
+    public ResponseEntity<EmployeeDto> add(@RequestBody EmployeeDto employeeDto) {
+        log.info("Employee add: {}", employeeDto);
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(employeeDto.getId()).toUri()).body(employeeService.add(employeeDto));
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<EmployeeDto> update(@PathVariable Long id, @RequestBody @Validated EmployeeDto employeeDto) {
+        log.info("Employee update id={}: {}", id, employeeDto);
+        return ResponseEntity.accepted().body(employeeService.update(id, employeeDto));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
+        log.info("Employee delete: id={}", id);
+        employeeService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

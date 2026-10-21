@@ -1,24 +1,23 @@
 package com.alexander.services.department.model;
 
+import com.alexander.domain.AbstractTimestamp;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Getter
 @Setter
-public class Department {
+@Entity
+@Table(name = "departments")
+public class Department extends AbstractTimestamp {
 
-    private Long id;
-    private Long organizationId;
+    @Column(name = "name")
     private String name;
-    private List<Employee> employees = new ArrayList<>();
 
-    public Department(Long organizationId, String name) {
-        super();
-        this.organizationId = organizationId;
-        this.name = name;
-    }
+    @Column(name = "organization_id")
+    private Long organizationId;
 
 }

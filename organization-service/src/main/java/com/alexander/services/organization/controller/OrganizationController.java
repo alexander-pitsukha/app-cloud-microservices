@@ -1,69 +1,94 @@
 package com.alexander.services.organization.controller;
 
-import java.util.List;
-
+import com.alexander.dto.DepartmentDto;
+import com.alexander.dto.EmployeeDto;
+import com.alexander.dto.OrganizationDto;
 import com.alexander.services.organization.client.DepartmentClient;
 import com.alexander.services.organization.client.EmployeeClient;
-import com.alexander.services.organization.model.Organization;
+import com.alexander.services.organization.controller.request.OrganizationRequest;
+import com.alexander.services.organization.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.alexander.services.organization.repository.OrganizationRepository;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class OrganizationController {
 
-    private final OrganizationRepository repository;
+    private final OrganizationService organizationService;
     private final DepartmentClient departmentClient;
     private final EmployeeClient employeeClient;
 
-    @PostMapping
-    public Organization add(@RequestBody Organization organization) {
-        log.info("Organization add: {}", organization);
-        return repository.add(organization);
-    }
-
     @GetMapping
-    public List<Organization> findAll() {
+    public ResponseEntity<List<OrganizationDto>> findAll(@RequestParam int page, @RequestParam int size) {
         log.info("Organization find");
-        return repository.findAll();
+        return ResponseEntity.ok(organizationService.findAll(page, size));
     }
 
     @GetMapping("{id}")
-    public Organization findById(@PathVariable("id") Long id) {
+    public ResponseEntity<OrganizationDto> findById(@PathVariable("id") Long id) {
         log.info("Organization find (findById): id={}", id);
-        return repository.findById(id);
+        return ResponseEntity.ok(organizationService.findById(id));
     }
 
     @GetMapping("{id}/with-departments")
-    public Organization findByIdWithDepartments(@PathVariable("id") Long id) {
+    public ResponseEntity<OrganizationDto> findByIdWithDepartments(@PathVariable("id") Long id) {
         log.info("Organization find (findByIdWithDepartments): id={}", id);
-        Organization organization = repository.findById(id);
-        organization.setDepartments(departmentClient.findByOrganization(organization.getId()));
-        return organization;
+        var organizationDto = organizationService.findById(id);
+        ResponseEntity<List<DepartmentDto>> response = departmentClient.findByOrganization(id);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            organizationDto.setDepartments(response.getBody());
+        }
+        return ResponseEntity.ok(organizationDto);
     }
 
     @GetMapping("{id}/with-departments-and-employees")
-    public Organization findByIdWithDepartmentsAndEmployees(@PathVariable("id") Long id) {
+    public ResponseEntity<OrganizationDto> findByIdWithDepartmentsAndEmployees(@PathVariable("id") Long id) {
         log.info("Organization find: id={}", id);
-        Organization organization = repository.findById(id);
-        organization.setDepartments(departmentClient.findByOrganizationWithEmployees(organization.getId()));
-        return organization;
+        var organizationDto = organizationService.findById(id);
+        ResponseEntity<List<DepartmentDto>> response = departmentClient.findByOrganizationWithEmployees(id);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            organizationDto.setDepartments(response.getBody());
+        }
+        return ResponseEntity.ok(organizationDto);
     }
 
     @GetMapping("{id}/with-employees")
-    public Organization findByIdWithEmployees(@PathVariable("id") Long id) {
+    public ResponseEntity<OrganizationDto> findByIdWithEmployees(@PathVariable("id") Long id) {
         log.info("Organization find (findByIdWithEmployees): id={}", id);
-        Organization organization = repository.findById(id);
-        organization.setEmployees(employeeClient.findByOrganization(organization.getId()));
-        return organization;
+        var organizationDto = organizationService.findById(id);
+        ResponseEntity<List<EmployeeDto>> response = employeeClient.findByOrganization(id);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            organizationDto.setEmployees(response.getBody());
+        }
+        return ResponseEntity.ok(organizationDto);
+    }
+
+    @PostMapping
+    public ResponseEntity<OrganizationDto> add(@RequestBody OrganizationRequest organizationRequest) {
+        log.info("Organization add: {}", organizationRequest);
+        var organizationDto = organizationService.add(organizationRequest);
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(organizationDto.getId()).toUri()).body(organizationDto);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<OrganizationDto> update(@PathVariable Long id, @RequestBody @Validated OrganizationRequest organizationRequest) {
+        log.info("Organization update id={}: {}", id, organizationRequest);
+        return ResponseEntity.accepted().body(organizationService.update(id, organizationRequest));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
+        log.info("Organization delete: id={}", id);
+        organizationService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

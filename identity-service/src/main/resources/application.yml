@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: identity-service
+  config:
+    import: optional:configserver:http://${SPRING_SECURITY_USER_NAME}:${SPRING_SECURITY_USER_PASSWORD}@localhost:8888
