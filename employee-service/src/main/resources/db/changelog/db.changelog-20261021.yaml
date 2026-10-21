@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: bigint
+                  type: integer
                   autoIncrement: true
                   constraints:
                     primaryKey: true
@@ -23,15 +23,18 @@ databaseChangeLog:
               - column:
                   name: email
                   type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
               - column:
                   name: position
                   type: varchar(255)
               - column:
                   name: department_id
-                  type: bigint
+                  type: integer
               - column:
                   name: organization_id
-                  type: bigint
+                  type: integer
               - column:
                   name: create_at
                   type: timestamp
@@ -41,10 +44,6 @@ databaseChangeLog:
               - column:
                   name: updated_at
                   type: timestamp
-        - addUniqueConstraint:
-            tableName: employees
-            columnNames: email
-            constraintName: uk_employees_email
 
   - changeSet:
       id: 2-insert-employees

@@ -13,14 +13,14 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:hsqldb:mem:movies
-    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+    url: jdbc:derby:memory:myDb;create=true
+    driver-class-name: org.apache.derby.jdbc.EmbeddedDriver
     username: sa
     password: sa
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.HSQLDialect
+        dialect: org.hibernate.dialect.DerbyTenSevenDialect
     hibernate:
       ddl-auto: none
     show-sql: true

@@ -13,7 +13,7 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:hsqldb:mem:movies
+    url: jdbc:hsqldb:mem:myDb
     driver-class-name: org.hsqldb.jdbc.JDBCDriver
     username: sa
     password: sa
