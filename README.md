@@ -22,6 +22,7 @@ Our sample microservices-based system consists of the following modules:
   mode. The configuration files are placed on the classpath.
 - **discovery-service** - a module that depending on the example it uses Spring Cloud Netflix Eureka or Spring Cloud
   Netlix Alibaba Nacos as an embedded discovery server.
+- **identity-service** - a module providing authentication and authorization using JWT-tokens (access token and refresh token)
 - **employee-service** - a module containing the first of our sample microservices that allows to perform CRUD operation
   on in-memory repository of employees
 - **department-service** - a module containing the second of our sample microservices that allows to perform CRUD
