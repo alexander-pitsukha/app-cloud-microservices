@@ -1,0 +1,80 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka/
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+
+gateway:
+  security:
+    open-api-endpoints:
+      - /identity/auth/signup
+      - /identity/auth/signin
+      - /identity/auth/refresh-token
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: identity-service
+          uri: lb://identity-service
+          predicates:
+            - Path=/identity/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/identity/(?<path>.*), /$\{path}
+            - name: CircuitBreaker
+              args:
+                name: identity-service-circuit-breaker
+                fallback-uri: forward:/identity-service-fallback
+        - id: employee-service
+          uri: lb://employee-service
+          predicates:
+            - Path=/employee/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/employee/(?<path>.*), /$\{path}
+        - id: department-service
+          uri: lb://department-service
+          predicates:
+            - Path=/department/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/department/(?<path>.*), /$\{path}
+        - id: organization-service
+          uri: lb://organization-service
+          predicates:
+            - Path=/organization/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/organization/(?<path>.*), /$\{path}
+        - id: openapi
+          uri: http://localhost:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+
+spring-doc:
+  swagger-ui:
+    urls:
+      - name: identity-service
+        url: /v3/api-docs/identity
+      - name: employee-service
+        url: /v3/api-docs/employee
+      - name: department-service
+        url: /v3/api-docs/department
+      - name: organization-service
+        url: /v3/api-docs/organization
