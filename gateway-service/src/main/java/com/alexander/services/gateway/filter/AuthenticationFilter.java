@@ -1,6 +1,5 @@
 package com.alexander.services.gateway.filter;
 
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -28,25 +27,12 @@ public class AuthenticationFilter implements GatewayFilter {
         if (!path.contains("/v3/api-docs") && routerValidator.isSecured(request)) {
             String token = getJwtFromRequest(request);
             if (token == null || !tokenHelper.validateToken(token)) {
-                return onError(exchange);
+                ServerHttpResponse response = exchange.getResponse();
+                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                return response.setComplete();
             }
-            populateRequestWithHeaders(exchange, token);
         }
         return chain.filter(exchange);
-    }
-
-    private Mono<Void> onError(ServerWebExchange exchange) {
-        ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(HttpStatus.UNAUTHORIZED);
-        return response.setComplete();
-    }
-
-    private void populateRequestWithHeaders(ServerWebExchange exchange, String token) {
-        Claims claims = tokenHelper.extractAllClaims(token);
-        exchange.getRequest().mutate()
-                .header("userId", String.valueOf(claims.get("userId")))
-                .header("userRole", String.valueOf(claims.get("userRole")))
-                .build();
     }
 
     private String getJwtFromRequest(ServerHttpRequest request) {

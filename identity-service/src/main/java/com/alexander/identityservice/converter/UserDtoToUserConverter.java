@@ -1,7 +1,7 @@
 package com.alexander.identityservice.converter;
 
 import com.alexander.identityservice.dto.UserDto;
-import com.alexander.identityservice.model.User;
+import com.alexander.identityservice.entity.User;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

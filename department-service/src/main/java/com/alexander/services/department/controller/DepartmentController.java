@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -86,6 +87,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
         log.info("Department delete: id={}", id);
         departmentService.deleteById(id);

@@ -1,7 +1,10 @@
 package com.alexander.identityservice.authencation.jwt;
 
-import com.alexander.identityservice.model.User;
+import com.alexander.identityservice.entity.User;
+import com.alexander.token.Constants;
+import com.alexander.token.TokenType;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,18 +16,17 @@ import java.util.Objects;
 import java.util.function.Function;
 
 @Component
-public class JwtTokenUtil {
+public class TokenProvider {
 
-    private static final String TOKEN_TYPE = "tokenType";
     private final Integer expirationMinuteInMs;
     private final Long refreshExpirationDateInMs;
     private final Key key;
 
-    public JwtTokenUtil(@Value("${jwt.secret.key}") String secretKey, @Value("${jwt.access.expiration.minute.in.ms}") Integer expirationMinuteInMs,
-                        @Value("${jwt.refresh.expiration.date.in.ms}") Long refreshExpirationDateInMs) {
+    public TokenProvider(@Value("${jwt.secret.key}") String secretKey, @Value("${jwt.access.expiration.minute.in.ms}") Integer expirationMinuteInMs,
+                         @Value("${jwt.refresh.expiration.date.in.ms}") Long refreshExpirationDateInMs) {
         this.expirationMinuteInMs = expirationMinuteInMs;
         this.refreshExpirationDateInMs = refreshExpirationDateInMs;
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
     public String extractUsername(final String token) {
@@ -41,11 +43,11 @@ public class JwtTokenUtil {
     }
 
     public String generateToken(User user) {
-        return generateJwtToken(expirationMinuteInMs, user, TokenType.ACCESS.getType());
+        return generateToken(expirationMinuteInMs, user, TokenType.ACCESS.getType());
     }
 
     public String generateRefreshToken(User user) {
-        return generateJwtToken(refreshExpirationDateInMs, user, TokenType.REFRESH.getType());
+        return generateToken(refreshExpirationDateInMs, user, TokenType.REFRESH.getType());
     }
 
     public boolean validateToken(final String token, final UserDetails userDetails) {
@@ -54,14 +56,14 @@ public class JwtTokenUtil {
     }
 
     public boolean isRefreshToken(final String token) {
-        String tokenType = extractClaim(token, claims -> claims.get(TOKEN_TYPE, String.class));
+        String tokenType = extractClaim(token, claims -> claims.get(Constants.TOKEN_TYPE, String.class));
         return Objects.equals(tokenType, TokenType.REFRESH.getType());
     }
 
-    private String generateJwtToken(final long expiration, final User user, final String tokenType) {
+    private String generateToken(final long expiration, final User user, final String tokenType) {
         long current = System.currentTimeMillis();
         return Jwts.builder().setHeaderParam(Header.TYPE, Header.JWT_TYPE).setSubject(user.getEmail())
-                .claim("userId", user.getId()).claim("userRole", user.getRole().getAuthority()).claim(TOKEN_TYPE, tokenType)
+                .claim(Constants.USER_ID, user.getId()).claim(Constants.USER_ROLE, user.getRole().getAuthority()).claim(Constants.TOKEN_TYPE, tokenType)
                 .setIssuedAt(new Date(current)).setExpiration(new Date(current + expiration))
                 .signWith(key, SignatureAlgorithm.HS256).compact();
     }

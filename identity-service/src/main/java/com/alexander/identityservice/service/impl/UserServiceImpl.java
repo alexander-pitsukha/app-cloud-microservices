@@ -4,8 +4,8 @@ import com.alexander.dto.AutocompleteData;
 import com.alexander.enums.RoleType;
 import com.alexander.identityservice.controller.request.UserBody;
 import com.alexander.identityservice.dto.UserDto;
-import com.alexander.identityservice.model.RefreshToken;
-import com.alexander.identityservice.model.User;
+import com.alexander.identityservice.entity.RefreshToken;
+import com.alexander.identityservice.entity.User;
 import com.alexander.identityservice.repository.RefreshTokenRepository;
 import com.alexander.identityservice.repository.UserRepository;
 import com.alexander.identityservice.service.UserService;
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findUserByEmail(String email) {
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email).orElseThrow();
         return defaultConversionService.convert(user, UserDto.class);
     }
 
@@ -101,12 +101,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void deleteById(Long userId) {
-        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByUserId(userId);
+    public void deleteById(Long id) {
+        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByUserId(id);
         if (optionalRefreshToken.isPresent()) {
-            refreshTokenRepository.deleteByUserId(userId);
+            refreshTokenRepository.deleteByUserId(id);
         }
-        userRepository.deleteById(userId);
+        userRepository.deleteById(id);
     }
 
 }

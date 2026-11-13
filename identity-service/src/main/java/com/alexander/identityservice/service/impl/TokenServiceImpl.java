@@ -1,9 +1,9 @@
 package com.alexander.identityservice.service.impl;
 
-import com.alexander.identityservice.authencation.jwt.JwtTokenUtil;
+import com.alexander.identityservice.authencation.jwt.TokenProvider;
 import com.alexander.identityservice.controller.response.TokenResponse;
-import com.alexander.identityservice.model.RefreshToken;
-import com.alexander.identityservice.model.User;
+import com.alexander.identityservice.entity.RefreshToken;
+import com.alexander.identityservice.entity.User;
 import com.alexander.identityservice.repository.RefreshTokenRepository;
 import com.alexander.identityservice.repository.UserRepository;
 import com.alexander.identityservice.service.TokenService;
@@ -25,13 +25,13 @@ public class TokenServiceImpl implements TokenService {
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final TokenProvider tokenProvider;
 
     @Transactional
     @Override
     public TokenResponse createTokenResponse(Long userId) {
         var user = userRepository.findById(userId).orElseThrow();
-        String refreshToken = jwtTokenUtil.generateRefreshToken(user);
+        String refreshToken = tokenProvider.generateRefreshToken(user);
         saveToken(refreshToken, user);
         return createTokenResponse(user, refreshToken);
     }
@@ -39,9 +39,9 @@ public class TokenServiceImpl implements TokenService {
     @Transactional
     @Override
     public TokenResponse refreshTokens(String username, String refreshToken) {
-        var user = userRepository.findByEmail(username);
+        var user = userRepository.findByEmail(username).orElseThrow();
         RefreshToken entity = refreshTokenRepository.findByToken(refreshToken).orElseThrow(() -> new RuntimeException("Token expired"));
-        String newRefreshToken = jwtTokenUtil.generateRefreshToken(user);
+        String newRefreshToken = tokenProvider.generateRefreshToken(user);
         setFields(entity, newRefreshToken, user);
         return createTokenResponse(user, newRefreshToken);
     }
@@ -57,8 +57,8 @@ public class TokenServiceImpl implements TokenService {
     private TokenResponse createTokenResponse(User user, String refreshToken) {
         var tokenResponse = new TokenResponse();
         tokenResponse.setTokenType("Bearer");
-        tokenResponse.setAccessToken(jwtTokenUtil.generateToken(user));
-        tokenResponse.setExpiresIn(jwtTokenUtil.extractExpiration(refreshToken).getTime());
+        tokenResponse.setAccessToken(tokenProvider.generateToken(user));
+        tokenResponse.setExpiresIn(tokenProvider.extractExpiration(refreshToken).getTime());
         tokenResponse.setRefreshToken(refreshToken);
         return tokenResponse;
     }
@@ -77,7 +77,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private LocalDateTime extractExpiration(String token) {
-        return jwtTokenUtil.extractExpiration(token).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return tokenProvider.extractExpiration(token).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
 }

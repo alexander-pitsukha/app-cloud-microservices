@@ -20,9 +20,9 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class AuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenUtil jwtTokenUtil;
+    private final TokenProvider tokenProvider;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             token = authorizationHeader.substring(7);
             try {
-                username = jwtTokenUtil.extractUsername(token);
+                username = tokenProvider.extractUsername(token);
             } catch (SignatureException exception) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
@@ -41,11 +41,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             var userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtTokenUtil.validateToken(token, userDetails)) {
+            if (tokenProvider.validateToken(token, userDetails)) {
                 String requestURI = request.getRequestURI();
-                if (jwtTokenUtil.isRefreshToken(token) && requestURI.contains("refresh-token") && request.getMethod().equals(HttpMethod.GET.name())) {
+                if (tokenProvider.isRefreshToken(token) && requestURI.contains("refresh-token") && request.getMethod().equals(HttpMethod.GET.name())) {
                     request.setAttribute("token", token);
-                    request.setAttribute("email", jwtTokenUtil.extractUsername(token));
+                    request.setAttribute("email", tokenProvider.extractUsername(token));
                 }
                 createAuthenticationToken(request, userDetails);
             }

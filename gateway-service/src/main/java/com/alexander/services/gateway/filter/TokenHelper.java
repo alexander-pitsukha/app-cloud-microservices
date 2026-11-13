@@ -1,6 +1,9 @@
 package com.alexander.services.gateway.filter;
 
+import com.alexander.token.Constants;
+import com.alexander.token.TokenType;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +22,7 @@ public class TokenHelper {
     private final Key key;
 
     public TokenHelper(@Value("${jwt.secret.key}") String secretKey) {
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
     public boolean validateToken(final String token) {
@@ -41,12 +44,8 @@ public class TokenHelper {
     }
 
     public boolean isRefreshToken(final String token) {
-        String tokenType = extractClaim(token, claims -> claims.get("tokenType", String.class));
-        return Objects.equals(tokenType, "refresh");
-    }
-
-    public Claims extractAllClaims(final String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        String tokenType = extractClaim(token, claims -> claims.get(Constants.TOKEN_TYPE, String.class));
+        return Objects.equals(tokenType, TokenType.REFRESH.getType());
     }
 
     public boolean isTokenExpired(final String token) {
@@ -61,6 +60,10 @@ public class TokenHelper {
     private <T> T extractClaim(final String token, final Function<Claims, T> claimsResolver) {
         final var claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
+    }
+
+    public Claims extractAllClaims(final String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
 }

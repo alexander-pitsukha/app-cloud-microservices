@@ -30,10 +30,7 @@ public class GatewayApplication {
     public List<GroupedOpenApi> groupedOpenApis(RouteDefinitionLocator locator) {
         List<RouteDefinition> definitions = locator.getRouteDefinitions().collectList().block();
         assert definitions != null;
-        return definitions.stream().filter(definition -> definition.getId().matches(".*-service")).map(definition -> {
-            String name = definition.getId().replace("-service", "");
-            return GroupedOpenApi.builder().pathsToMatch("/" + name + "/**").group(name).build();
-        }).toList();
+        return definitions.stream().filter(definition -> definition.getId().matches(".*-service")).map(definition -> GroupedOpenApi.builder().pathsToMatch("/" + definition.getId() + "/**").group(definition.getId()).build()).toList();
     }
 
 }

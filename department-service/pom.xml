@@ -44,6 +44,25 @@
             <artifactId>spring-cloud-starter-sleuth</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${io.jsonwebtoken.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${io.jsonwebtoken.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${io.jsonwebtoken.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
@@ -57,11 +76,6 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>${io.jsonwebtoken.version}</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>

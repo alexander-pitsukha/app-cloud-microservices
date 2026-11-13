@@ -9,12 +9,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableJpaRepositories
 @EnableTransactionManagement
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @OpenAPIDefinition(info = @Info(title = "Employee API", version = "1.0", description = "Documentation Employee API v1.0"))
 @SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER, scheme = "bearer", bearerFormat = "JWT")
 public class EmployeeApplication {

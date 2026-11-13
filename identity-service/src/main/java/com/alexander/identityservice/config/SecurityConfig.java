@@ -1,7 +1,7 @@
 package com.alexander.identityservice.config;
 
 import com.alexander.enums.RoleType;
-import com.alexander.identityservice.authencation.jwt.JwtAuthenticationFilter;
+import com.alexander.identityservice.authencation.jwt.AuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +36,7 @@ public class SecurityConfig {
 
     @Bean
     @Autowired
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationFilter authenticationFilter) throws Exception {
         http.cors(withDefaults()).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable().httpBasic().disable().formLogin().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .antMatchers("/actuator/health", "/actuator/health/liveness", "/actuator/health/readiness").permitAll()
                 .antMatchers("/users/**").hasAnyAuthority(RoleType.ADMIN.getAuthority())
                 .anyRequest().authenticated().and().exceptionHandling().and().logout().permitAll();
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

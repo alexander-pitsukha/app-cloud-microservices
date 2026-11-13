@@ -1,10 +1,10 @@
 package com.alexander.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +12,6 @@ import java.util.List;
 @Setter
 public class DepartmentDto extends AbstractLongIdentifiableDto {
 
-    @NotNull
     @NotBlank
     private String name;
 

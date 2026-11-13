@@ -1,4 +1,4 @@
-package com.alexander.identityservice.authencation.jwt;
+package com.alexander.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

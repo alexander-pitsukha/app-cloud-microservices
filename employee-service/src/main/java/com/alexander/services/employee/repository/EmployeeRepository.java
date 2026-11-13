@@ -1,6 +1,6 @@
 package com.alexander.services.employee.repository;
 
-import com.alexander.services.employee.model.Employee;
+import com.alexander.services.employee.entity.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

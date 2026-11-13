@@ -2,13 +2,12 @@ package com.alexander.services.department.service;
 
 import com.alexander.dto.AutocompleteData;
 import com.alexander.dto.DepartmentDto;
+import com.alexander.service.impl.ServiceImpl;
+import com.alexander.services.department.entity.Department;
 import com.alexander.services.department.mapper.DepartmentMapper;
-import com.alexander.services.department.model.Department;
 import com.alexander.services.department.repository.DepartmentRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,21 +17,15 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
-public class DepartmentServiceImpl implements DepartmentService {
+public class DepartmentServiceImpl extends ServiceImpl<DepartmentRepository, DepartmentMapper, Department, DepartmentDto> implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
 
-    @Override
-    public Page<DepartmentDto> findAll(int page, int size) {
-        Page<Department> departments;
-        if (page == 0 && size == 0) {
-            departments = departmentRepository.findAll(Pageable.unpaged());
-        } else {
-            departments = departmentRepository.findAll(PageRequest.of(page, size));
-        }
-        return departments.map(departmentMapper::toDto);
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository, DepartmentMapper departmentMapper) {
+        super(departmentRepository, departmentMapper);
+        this.departmentRepository = departmentRepository;
+        this.departmentMapper = departmentMapper;
     }
 
     @Override
@@ -45,12 +38,6 @@ public class DepartmentServiceImpl implements DepartmentService {
             departments = departmentRepository.findAll(PageRequest.of(0, limit, Sort.by(fieldName).ascending()));
         }
         return departments.map(department -> new AutocompleteData(department.getId(), department.getName())).toList();
-    }
-
-    @Override
-    public DepartmentDto findById(Long id) {
-        var department = departmentRepository.findById(id).orElseThrow();
-        return departmentMapper.toDto(department);
     }
 
     @Override
@@ -67,25 +54,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Transactional
     @Override
-    public DepartmentDto save(DepartmentDto departmentDto) {
-        var department = departmentMapper.toEntity(departmentDto);
-        department = departmentRepository.save(department);
-        return departmentMapper.toDto(department);
-    }
-
-    @Transactional
-    @Override
     public DepartmentDto update(Long id, DepartmentDto departmentDto) {
         var department = departmentRepository.findById(id).orElseThrow();
         department.setName(departmentDto.getName());
         department.setOrganizationId(departmentDto.getOrganizationId());
         return departmentMapper.toDto(department);
-    }
-
-    @Transactional
-    @Override
-    public void deleteById(Long id) {
-        departmentRepository.deleteById(id);
     }
 
 }

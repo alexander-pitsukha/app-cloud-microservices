@@ -1,7 +1,7 @@
 package com.alexander.identityservice.converter;
 
 import com.alexander.identityservice.controller.request.UserBody;
-import com.alexander.identityservice.model.User;
+import com.alexander.identityservice.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.crypto.password.PasswordEncoder;

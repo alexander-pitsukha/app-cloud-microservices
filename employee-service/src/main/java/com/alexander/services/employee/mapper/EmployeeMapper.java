@@ -1,18 +1,16 @@
 package com.alexander.services.employee.mapper;
 
 import com.alexander.dto.EmployeeDto;
-import com.alexander.services.employee.model.Employee;
+import com.alexander.mapper.BaseMapper;
+import com.alexander.services.employee.entity.Employee;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface EmployeeMapper {
-
-    EmployeeMapper INSTANCE = Mappers.getMapper(EmployeeMapper.class);
+public interface EmployeeMapper extends BaseMapper<Employee, EmployeeDto> {
 
     @Mapping(target = "id", source = "employee.id")
     EmployeeDto toDto(Employee employee);

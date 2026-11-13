@@ -14,7 +14,6 @@ public class UserBody {
 
     private String name;
 
-    @NotBlank
     @Email
     private String email;
 
