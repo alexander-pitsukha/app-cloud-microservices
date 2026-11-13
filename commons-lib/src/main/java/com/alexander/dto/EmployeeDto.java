@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 public class EmployeeDto extends AbstractLongIdentifiableDto {
 
-    @NotNull
     @NotBlank
     private String name;
 

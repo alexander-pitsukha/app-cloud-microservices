@@ -101,12 +101,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void deleteById(Long userId) {
-        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByUserId(userId);
+    public void deleteById(Long id) {
+        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByUserId(id);
         if (optionalRefreshToken.isPresent()) {
-            refreshTokenRepository.deleteByUserId(userId);
+            refreshTokenRepository.deleteByUserId(id);
         }
-        userRepository.deleteById(userId);
+        userRepository.deleteById(id);
     }
 
 }

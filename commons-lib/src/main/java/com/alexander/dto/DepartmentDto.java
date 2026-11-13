@@ -12,7 +12,6 @@ import java.util.List;
 @Setter
 public class DepartmentDto extends AbstractLongIdentifiableDto {
 
-    @NotNull
     @NotBlank
     private String name;
 
