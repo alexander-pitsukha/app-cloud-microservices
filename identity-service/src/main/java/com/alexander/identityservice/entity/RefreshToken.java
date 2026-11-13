@@ -1,4 +1,4 @@
-package com.alexander.identityservice.model;
+package com.alexander.identityservice.entity;
 
 import com.alexander.domain.AbstractIdentifiable;
 import lombok.Getter;

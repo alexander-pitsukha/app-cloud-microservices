@@ -1,6 +1,6 @@
 package com.alexander.identityservice.repository;
 
-import com.alexander.identityservice.model.RefreshToken;
+import com.alexander.identityservice.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

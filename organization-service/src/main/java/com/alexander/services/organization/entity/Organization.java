@@ -1,4 +1,4 @@
-package com.alexander.services.organization.model;
+package com.alexander.services.organization.entity;
 
 import com.alexander.domain.AbstractTimestamp;
 import lombok.Getter;

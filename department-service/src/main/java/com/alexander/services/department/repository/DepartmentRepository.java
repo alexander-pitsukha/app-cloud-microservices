@@ -1,6 +1,6 @@
 package com.alexander.services.department.repository;
 
-import com.alexander.services.department.model.Department;
+import com.alexander.services.department.entity.Department;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

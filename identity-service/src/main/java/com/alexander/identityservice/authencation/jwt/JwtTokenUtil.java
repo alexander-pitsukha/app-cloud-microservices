@@ -1,6 +1,6 @@
 package com.alexander.identityservice.authencation.jwt;
 
-import com.alexander.identityservice.model.User;
+import com.alexander.identityservice.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;

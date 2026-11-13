@@ -2,8 +2,8 @@ package com.alexander.identityservice.service.impl;
 
 import com.alexander.identityservice.authencation.jwt.JwtTokenUtil;
 import com.alexander.identityservice.controller.response.TokenResponse;
-import com.alexander.identityservice.model.RefreshToken;
-import com.alexander.identityservice.model.User;
+import com.alexander.identityservice.entity.RefreshToken;
+import com.alexander.identityservice.entity.User;
 import com.alexander.identityservice.repository.RefreshTokenRepository;
 import com.alexander.identityservice.repository.UserRepository;
 import com.alexander.identityservice.service.TokenService;
@@ -39,7 +39,7 @@ public class TokenServiceImpl implements TokenService {
     @Transactional
     @Override
     public TokenResponse refreshTokens(String username, String refreshToken) {
-        var user = userRepository.findByEmail(username);
+        var user = userRepository.findByEmail(username).orElseThrow();
         RefreshToken entity = refreshTokenRepository.findByToken(refreshToken).orElseThrow(() -> new RuntimeException("Token expired"));
         String newRefreshToken = jwtTokenUtil.generateRefreshToken(user);
         setFields(entity, newRefreshToken, user);

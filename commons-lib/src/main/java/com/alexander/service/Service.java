@@ -1,16 +1,21 @@
 package com.alexander.service;
 
-public interface Service<T, P, L, I> {
+import com.alexander.dto.AbstractLongIdentifiableDto;
+
+import java.io.Serializable;
+import java.util.Collection;
+
+public interface Service<D extends AbstractLongIdentifiableDto, P, L extends Collection<?>, I extends Serializable> {
 
     P findAll(int page, int size);
 
     L findAutocomplete(String query, Integer limit);
 
-    T findById(I id);
+    D findById(I id);
 
-    T save(T t);
+    D save(D d);
 
-    T update(I id, T t);
+    D update(I id, D d);
 
     void deleteById(I id);
 

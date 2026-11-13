@@ -17,6 +17,9 @@ databaseChangeLog:
               - column:
                   name: email
                   type: varchar(255)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: users_email
               - column:
                   name: name
                   type: varchar(255)
@@ -26,10 +29,6 @@ databaseChangeLog:
               - column:
                   name: role
                   type: integer
-        - addUniqueConstraint:
-            tableName: users
-            columnNames: email
-            constraintName: users_email_key
 
   - changeSet:
       id: 2-create-refresh-tokens
@@ -57,7 +56,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     unique: true
-                    uniqueConstraintName: refresh_tokens_token_key
+                    uniqueConstraintName: refresh_tokens_token
               - column:
                   name: user_id
                   type: bigint

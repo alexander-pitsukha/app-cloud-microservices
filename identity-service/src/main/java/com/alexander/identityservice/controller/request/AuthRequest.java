@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class AuthRequest {
 
-    @NotBlank
     @Email
     private String email;
 

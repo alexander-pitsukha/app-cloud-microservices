@@ -1,16 +1,14 @@
 package com.alexander.services.organization.mapper;
 
 import com.alexander.dto.OrganizationDto;
-import com.alexander.services.organization.model.Organization;
+import com.alexander.mapper.BaseMapper;
+import com.alexander.services.organization.entity.Organization;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface OrganizationMapper {
-
-    OrganizationMapper INSTANCE = Mappers.getMapper(OrganizationMapper.class);
+public interface OrganizationMapper extends BaseMapper<Organization, OrganizationDto> {
 
     @Mapping(target = "id", source = "organization.id")
     OrganizationDto toDto(Organization organization);
