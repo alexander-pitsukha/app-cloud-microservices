@@ -1,7 +1,7 @@
 package com.alexander.services.organization.mapper;
 
-import com.alexander.dto.OrganizationDto;
-import com.alexander.mapper.BaseMapper;
+import com.alexander.services.library.dto.OrganizationDto;
+import com.alexander.services.library.mapper.BaseMapper;
 import com.alexander.services.organization.entity.Organization;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,0 +1,268 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-create-tables
+      author: alexander
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: roles_pkey
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: roles_name
+
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: users_pkey
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: users_email
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: users_username
+              - column:
+                  name: last_password_id
+                  type: integer
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: users_last_password_id
+              - column:
+                  name: email_verified
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email_verification_token
+                  type: varchar(50)
+              - column:
+                  name: email_verification_token_expires_at
+                  type: timestamp
+              - column:
+                  name: password_reset_token
+                  type: varchar(50)
+              - column:
+                  name: password_reset_token_expires_at
+                  type: timestamp
+              - column:
+                  name: role_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: current_timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+        - addForeignKeyConstraint:
+            baseTableName: users
+            baseColumnNames: role_id
+            referencedTableName: roles
+            referencedColumnNames: id
+            constraintName: users_role_id_fkey
+
+        - createTable:
+            tableName: passwords
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: passwords_pkey
+                    nullable: false
+              - column:
+                  name: password_hash
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: current_timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: passwords
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: passwords_user_id_fkey
+
+        - createTable:
+            tableName: refresh_tokens
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: refresh_tokens_pkey
+                    nullable: false
+              - column:
+                  name: expire_date
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: token
+                  type: varchar(600)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: refresh_tokens_token
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: refresh_tokens
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: refresh_tokens_user_id_fkey
+
+        - createTable:
+            tableName: audit_login
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: audit_login_pkey
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: current_timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: audit_login
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: audit_login_user_id_fkey
+
+  - changeSet:
+      id: 2-insert-default-users
+      author: alexander
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: ADMIN
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: USER
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: admin
+              - column:
+                  name: email
+                  value: admin@test.com
+              - column:
+                  name: email_verified
+                  valueBoolean: true
+              - column:
+                  name: role_id
+                  valueNumeric: 1
+
+        - insert:
+            tableName: passwords
+            columns:
+              - column:
+                  name: password_hash
+                  value: '$argon2id$v=19$m=16384,t=2,p=1$dwVzoy37iKzDl/d0pubKQA$ktsUNEvS3yXpHcQN9NBowNohjlrzpwBwXibd3oFkn50'
+              - column:
+                  name: user_id
+                  valueNumeric: 1
+
+        - update:
+            tableName: users
+            columns:
+              - name: last_password_id
+                valueNumeric: 1
+            where:
+              - name: user_id
+                valueNumeric: 1
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: user
+              - column:
+                  name: email
+                  value: user@test.com
+              - column:
+                  name: email_verified
+                  valueBoolean: true
+              - column:
+                  name: role_id
+                  valueNumeric: 2
+
+        - insert:
+            tableName: passwords
+            columns:
+              - column:
+                  name: password_hash
+                  value: '$argon2id$v=19$m=16384,t=2,p=1$dwVzoy37iKzDl/d0pubKQA$ktsUNEvS3yXpHcQN9NBowNohjlrzpwBwXibd3oFkn50'
+              - column:
+                  name: user_id
+                  valueNumeric: 2

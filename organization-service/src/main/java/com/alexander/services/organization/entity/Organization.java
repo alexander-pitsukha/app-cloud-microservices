@@ -1,18 +1,17 @@
 package com.alexander.services.organization.entity;
 
-import com.alexander.domain.AbstractTimestamp;
+import com.alexander.services.library.domain.AbstractEntityAt;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "organizations")
-public class Organization extends AbstractTimestamp {
+public class Organization extends AbstractEntityAt {
 
     @Column(name = "name")
     private String name;

@@ -1,8 +1,8 @@
 package com.alexander.services.employee.controller;
 
-import com.alexander.dto.AutocompleteData;
-import com.alexander.dto.EmployeeDto;
 import com.alexander.services.employee.service.EmployeeService;
+import com.alexander.services.library.dto.AutocompleteData;
+import com.alexander.services.library.dto.EmployeeDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

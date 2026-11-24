@@ -1,8 +1,8 @@
 package com.alexander.services.department.service;
 
-import com.alexander.dto.AutocompleteData;
-import com.alexander.dto.DepartmentDto;
-import com.alexander.service.Service;
+import com.alexander.services.library.dto.AutocompleteData;
+import com.alexander.services.library.dto.DepartmentDto;
+import com.alexander.services.library.service.Service;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

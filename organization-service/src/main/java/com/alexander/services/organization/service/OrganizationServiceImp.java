@@ -1,8 +1,8 @@
 package com.alexander.services.organization.service;
 
-import com.alexander.dto.AutocompleteData;
-import com.alexander.dto.OrganizationDto;
-import com.alexander.service.impl.ServiceImpl;
+import com.alexander.services.library.dto.AutocompleteData;
+import com.alexander.services.library.dto.OrganizationDto;
+import com.alexander.services.library.service.ServiceImpl;
 import com.alexander.services.organization.entity.Organization;
 import com.alexander.services.organization.mapper.OrganizationMapper;
 import com.alexander.services.organization.repository.OrganizationRepository;

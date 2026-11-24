@@ -1,8 +1,8 @@
 package com.alexander.services.employee.mapper;
 
-import com.alexander.dto.EmployeeDto;
-import com.alexander.mapper.BaseMapper;
 import com.alexander.services.employee.entity.Employee;
+import com.alexander.services.library.dto.EmployeeDto;
+import com.alexander.services.library.mapper.BaseMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;

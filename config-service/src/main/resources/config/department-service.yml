@@ -1,6 +1,5 @@
 server:
   port: 8083
-  forward-headers-strategy: framework
 
 eureka:
   client:
@@ -15,12 +14,15 @@ spring:
   datasource:
     url: jdbc:derby:memory:myDb;create=true
     driver-class-name: org.apache.derby.jdbc.EmbeddedDriver
-    username: sa
-    password: sa
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.DerbyTenSevenDialect
+        dialect: org.hibernate.community.dialect.DerbyDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
     hibernate:
       ddl-auto: none
     show-sql: true

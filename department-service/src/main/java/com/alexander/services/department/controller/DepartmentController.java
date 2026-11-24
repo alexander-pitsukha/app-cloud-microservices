@@ -1,10 +1,10 @@
 package com.alexander.services.department.controller;
 
-import com.alexander.dto.AutocompleteData;
-import com.alexander.dto.DepartmentDto;
-import com.alexander.dto.EmployeeDto;
 import com.alexander.services.department.client.EmployeeClient;
 import com.alexander.services.department.service.DepartmentService;
+import com.alexander.services.library.dto.AutocompleteData;
+import com.alexander.services.library.dto.DepartmentDto;
+import com.alexander.services.library.dto.EmployeeDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

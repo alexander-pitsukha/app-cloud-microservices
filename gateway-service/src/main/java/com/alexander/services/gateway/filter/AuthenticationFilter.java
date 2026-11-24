@@ -38,7 +38,7 @@ public class AuthenticationFilter implements GatewayFilter {
     private String getJwtFromRequest(ServerHttpRequest request) {
         List<String> authHeaders = request.getHeaders().getOrEmpty("Authorization");
         if (!authHeaders.isEmpty()) {
-            String bearerToken = authHeaders.get(0);
+            String bearerToken = authHeaders.getFirst();
             if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
                 return bearerToken.substring(7);
             }

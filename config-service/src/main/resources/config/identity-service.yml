@@ -1,6 +1,5 @@
 server:
   port: 8081
-  forward-headers-strategy: framework
 
 eureka:
   client:
@@ -11,8 +10,8 @@ spring:
   datasource:
     url: jdbc:h2:mem:myDb
     driver-class-name: org.h2.Driver
-    username: sa
-    password: sa
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     properties:
       hibernate:
@@ -20,6 +19,23 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_LOGIN}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            required: true
+  messages:
+    always-use-message-format: false
+    basename: messages/message_en
+    encoding: UTF-8
+    fallback-to-system-locale: true
 
 jwt:
   refresh:
@@ -34,3 +50,27 @@ jwt:
           ms: ${JWT_ACCESS_EXPIRATION}
   secret:
     key: ${JWT_SECRET_KEY}
+
+frontend:
+  host: ${FRONTEND_HOST}
+
+email:
+  from: ${EMAIL_FROM}
+  verification:
+    token:
+      expiration:
+        hours: 3
+
+password:
+  reset:
+    token:
+      expiration:
+        hours: 3
+  unique:
+    limit: 5
+  delete:
+    months: 6
+
+audit:
+  delete:
+    months: 6

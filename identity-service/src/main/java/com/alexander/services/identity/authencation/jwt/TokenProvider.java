@@ -1,0 +1,87 @@
+package com.alexander.services.identity.authencation.jwt;
+
+import com.alexander.services.identity.entity.User;
+import com.alexander.services.library.util.Constants;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+import java.util.Objects;
+import java.util.function.Function;
+
+@Component
+@Slf4j
+public class TokenProvider {
+
+    private final Integer expirationMinuteInMs;
+    private final Long refreshExpirationDateInMs;
+    private final SecretKey key;
+
+    public TokenProvider(@Value("${jwt.secret.key}") String secretKey, @Value("${jwt.access.expiration.minute.in.ms}") Integer expirationMinuteInMs,
+                         @Value("${jwt.refresh.expiration.date.in.ms}") Long refreshExpirationDateInMs) {
+        this.expirationMinuteInMs = expirationMinuteInMs;
+        this.refreshExpirationDateInMs = refreshExpirationDateInMs;
+        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+    }
+
+    public String extractUsername(final String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public Date extractExpiration(final String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    public <T> T extractClaim(final String token, final Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    public String generateToken(User user) {
+        return generateToken(expirationMinuteInMs, user, TokenType.ACCESS.getType());
+    }
+
+    public String generateRefreshToken(User user) {
+        return generateToken(refreshExpirationDateInMs, user, TokenType.REFRESH.getType());
+    }
+
+    public boolean validateToken(final String token, final UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (Objects.equals(username, userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    public boolean isRefreshToken(final String token) {
+        String tokenType = extractClaim(token, claims -> claims.get(Constants.TOKEN_TYPE, String.class));
+        return Objects.equals(tokenType, TokenType.REFRESH.getType());
+    }
+
+    private String generateToken(final long expiration, final User user, final String tokenType) {
+        long current = System.currentTimeMillis();
+        return Jwts.builder().header().type("JWT").and().subject(user.getEmail())
+                .claim(Constants.USER_ID, user.getId()).claim(Constants.USER_ROLE, user.getRole().getName()).claim(Constants.TOKEN_TYPE, tokenType)
+                .issuedAt(new Date(current)).expiration(new Date(current + expiration))
+                .signWith(key, Jwts.SIG.HS256).compact();
+    }
+
+    private Claims extractAllClaims(final String token) {
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+    }
+
+    private boolean isTokenExpired(final String token) {
+        try {
+            return extractExpiration(token).before(new Date());
+        } catch (ExpiredJwtException e) {
+            log.warn(e.getMessage(), e);
+            return true;
+        }
+    }
+
+}

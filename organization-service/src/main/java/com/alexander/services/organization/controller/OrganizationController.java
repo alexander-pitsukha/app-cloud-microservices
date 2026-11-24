@@ -1,9 +1,9 @@
 package com.alexander.services.organization.controller;
 
-import com.alexander.dto.AutocompleteData;
-import com.alexander.dto.DepartmentDto;
-import com.alexander.dto.EmployeeDto;
-import com.alexander.dto.OrganizationDto;
+import com.alexander.services.library.dto.AutocompleteData;
+import com.alexander.services.library.dto.DepartmentDto;
+import com.alexander.services.library.dto.EmployeeDto;
+import com.alexander.services.library.dto.OrganizationDto;
 import com.alexander.services.organization.client.DepartmentClient;
 import com.alexander.services.organization.client.EmployeeClient;
 import com.alexander.services.organization.service.OrganizationService;

@@ -1,8 +1,8 @@
 package com.alexander.services.department.mapper;
 
-import com.alexander.dto.DepartmentDto;
-import com.alexander.mapper.BaseMapper;
 import com.alexander.services.department.entity.Department;
+import com.alexander.services.library.dto.DepartmentDto;
+import com.alexander.services.library.mapper.BaseMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;

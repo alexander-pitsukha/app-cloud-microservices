@@ -1,11 +1,11 @@
 package com.alexander.services.department.service;
 
-import com.alexander.dto.AutocompleteData;
-import com.alexander.dto.DepartmentDto;
-import com.alexander.service.impl.ServiceImpl;
 import com.alexander.services.department.entity.Department;
 import com.alexander.services.department.mapper.DepartmentMapper;
 import com.alexander.services.department.repository.DepartmentRepository;
+import com.alexander.services.library.dto.AutocompleteData;
+import com.alexander.services.library.dto.DepartmentDto;
+import com.alexander.services.library.service.ServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
