@@ -7,8 +7,8 @@ eureka:
       default-zone: http://localhost:8761/eureka/
 
 jwt:
-  secret:
-    key: ${JWT_SECRET_KEY}
+  public:
+    key: ${PUBLIC_KEY}
 
 logging:
   pattern:

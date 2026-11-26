@@ -1,14 +1,17 @@
 package com.alexander.services.gateway.filter;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 import java.util.function.Function;
@@ -17,10 +20,10 @@ import java.util.function.Function;
 @Slf4j
 public class TokenHelper {
 
-    private final SecretKey key;
+    private final PublicKey key;
 
-    public TokenHelper(@Value("${jwt.secret.key}") String secretKey) {
-        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+    public TokenHelper(@Value("${jwt.public.key}") String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        this.key = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(key)));
     }
 
     public boolean validateToken(final String token) {

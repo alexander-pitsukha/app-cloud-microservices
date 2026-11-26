@@ -1,7 +1,5 @@
 package com.alexander.services.department.config;
 
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +11,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.crypto.SecretKey;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 @Configuration
 @EnableWebSecurity
@@ -27,8 +30,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecretKey secretKey(@Value("${jwt.secret.key}") String secretKey) {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+    public PublicKey secretKey(@Value("${jwt.public.key}") String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(key)));
     }
 
 }

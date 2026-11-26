@@ -5,14 +5,19 @@ import com.alexander.services.library.util.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 import java.util.function.Function;
@@ -23,13 +28,16 @@ public class TokenProvider {
 
     private final Integer expirationMinuteInMs;
     private final Long refreshExpirationDateInMs;
-    private final SecretKey key;
+    private final PrivateKey privateKey;
+    private final PublicKey publicKey;
 
-    public TokenProvider(@Value("${jwt.secret.key}") String secretKey, @Value("${jwt.access.expiration.minute.in.ms}") Integer expirationMinuteInMs,
-                         @Value("${jwt.refresh.expiration.date.in.ms}") Long refreshExpirationDateInMs) {
+    public TokenProvider(@Value("${jwt.private.key}") String privateKey, @Value("${jwt.public.key}") String publicKey, @Value("${jwt.access.expiration.minute.in.ms}") Integer expirationMinuteInMs,
+                         @Value("${jwt.refresh.expiration.date.in.ms}") Long refreshExpirationDateInMs) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        this.privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey)));
+        this.publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKey)));
         this.expirationMinuteInMs = expirationMinuteInMs;
         this.refreshExpirationDateInMs = refreshExpirationDateInMs;
-        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
     public String extractUsername(final String token) {
@@ -68,11 +76,11 @@ public class TokenProvider {
         return Jwts.builder().header().type("JWT").and().subject(user.getEmail())
                 .claim(Constants.USER_ID, user.getId()).claim(Constants.USER_ROLE, user.getRole().getName()).claim(Constants.TOKEN_TYPE, tokenType)
                 .issuedAt(new Date(current)).expiration(new Date(current + expiration))
-                .signWith(key, Jwts.SIG.HS256).compact();
+                .signWith(privateKey, Jwts.SIG.RS256).compact();
     }
 
     private Claims extractAllClaims(final String token) {
-        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        return Jwts.parser().verifyWith(publicKey).build().parseSignedClaims(token).getPayload();
     }
 
     private boolean isTokenExpired(final String token) {

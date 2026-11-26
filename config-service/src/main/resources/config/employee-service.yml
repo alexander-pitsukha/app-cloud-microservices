@@ -26,5 +26,5 @@ spring:
     show-sql: true
 
 jwt:
-  secret:
-    key: ${JWT_SECRET_KEY}
+  public:
+    key: ${PUBLIC_KEY}

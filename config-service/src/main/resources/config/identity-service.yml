@@ -48,8 +48,10 @@ jwt:
       minute:
         in:
           ms: ${JWT_ACCESS_EXPIRATION}
-  secret:
-    key: ${JWT_SECRET_KEY}
+  private:
+    key: ${PRIVATE_KEY}
+  public:
+    key: ${PUBLIC_KEY}
 
 frontend:
   host: ${FRONTEND_HOST}
